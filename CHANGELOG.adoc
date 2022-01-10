@@ -11,7 +11,7 @@ The format is based on https://keepachangelog.com/[Keep a Changelog], and this p
 
 toc::[]
 
-== {project-url}[Unreleased]
+== {project-url}/releases/tag/v0.0.1[0.0.1] - 2022-01-10
 
 === Added
 
