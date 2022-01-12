@@ -17,6 +17,8 @@
 #![deny(missing_debug_implementations, missing_docs)]
 #![forbid(unsafe_code)]
 
+mod error;
 pub mod filetime;
 
+pub use crate::error::{Error, Result};
 pub use crate::filetime::FileTime;

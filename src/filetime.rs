@@ -20,6 +20,7 @@ pub enum Error {
     /// Out of range of the timestamp.
     #[error("Out of range of 7z timestamp")]
     InvalidFileTime,
+
     /// The timestamp is too big.
     #[error("7z timestamp is too big")]
     FileTimeTooBig,
