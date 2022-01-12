@@ -6,12 +6,15 @@
 
 //! 7z timestamp.
 
+#[allow(unused_imports)]
 use std::time::SystemTime;
 
 use thiserror::Error;
+#[cfg(feature = "time")]
 use time::{macros::datetime, Duration, OffsetDateTime};
 
 /// The NT time epoch.
+#[cfg(feature = "time")]
 const NT_EPOCH: OffsetDateTime = datetime!(1601-01-01 00:00 UTC);
 
 /// The error type for 7z timestamp.
@@ -41,6 +44,7 @@ impl From<u64> for FileTime {
     }
 }
 
+#[cfg(feature = "time")]
 impl TryFrom<SystemTime> for FileTime {
     type Error = Error;
 
@@ -55,6 +59,7 @@ impl TryFrom<SystemTime> for FileTime {
     }
 }
 
+#[cfg(feature = "time")]
 impl TryFrom<OffsetDateTime> for FileTime {
     type Error = Error;
 
@@ -81,6 +86,7 @@ impl From<FileTime> for u64 {
     }
 }
 
+#[cfg(feature = "time")]
 impl TryFrom<FileTime> for SystemTime {
     type Error = Error;
 
@@ -97,6 +103,7 @@ impl TryFrom<FileTime> for SystemTime {
     }
 }
 
+#[cfg(feature = "time")]
 impl TryFrom<FileTime> for OffsetDateTime {
     type Error = Error;
 
@@ -119,14 +126,17 @@ impl TryFrom<FileTime> for OffsetDateTime {
 
 #[cfg(test)]
 mod tests {
+    #[cfg(feature = "time")]
     use time::{macros::datetime, Duration, OffsetDateTime};
 
+    #[allow(unused_imports)]
     use super::*;
 
     /// The largest value that can be represented by the Windows NT system time.
     #[cfg(feature = "large-dates")]
     const MAX: OffsetDateTime = datetime!(+60056-05-28 05:36:10.955_161_500 UTC);
 
+    #[cfg(feature = "time")]
     #[test]
     fn offset_date_time_to_file_time() {
         assert!(FileTime::try_from(NT_EPOCH - Duration::NANOSECOND).is_err());
@@ -148,6 +158,7 @@ mod tests {
         assert!(FileTime::try_from(MAX + Duration::nanoseconds(100)).is_err());
     }
 
+    #[cfg(feature = "time")]
     #[test]
     fn file_time_to_offset_date_time() {
         assert_eq!(
