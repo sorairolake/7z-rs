@@ -1,0 +1,8 @@
+= 7z file format specification
+
+The specification is imported from the https://www.7-zip.org/sdk.html[LZMA SDK] v21.07.
+
+== See also
+
+* https://en.wikipedia.org/wiki/7z[English Wikipedia article]
+* https://py7zr.readthedocs.io/en/latest/archive_format.html[Specification by py7zr project]
