@@ -6,7 +6,7 @@
 
 //! 7z timestamp.
 
-#[allow(unused_imports)]
+#[cfg(feature = "time")]
 use std::time::SystemTime;
 
 use thiserror::Error;
@@ -34,8 +34,15 @@ pub enum Error {
 /// This is the same as the [Windows NT system time][file-times].
 ///
 /// [file-times]: https://docs.microsoft.com/en-us/windows/win32/sysinfo/file-times
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct FileTime(u64);
+
+impl Default for FileTime {
+    /// Returns the default value of "1601-01-01 00:00:00 UTC".
+    fn default() -> Self {
+        Self(u64::MIN)
+    }
+}
 
 impl From<u64> for FileTime {
     /// Convert the Windows NT system time to [`FileTime`].
@@ -113,11 +120,12 @@ impl TryFrom<FileTime> for OffsetDateTime {
     ///
     /// This function will return an error if the `large-dates` feature is
     /// disabled and `value` is out of range of [`OffsetDateTime`].
-    #[allow(clippy::cast_possible_truncation, clippy::cast_possible_wrap)]
     fn try_from(value: FileTime) -> Result<Self, Self::Error> {
         let duration = Duration::new(
-            (value.0 / 10_000_000) as i64,
-            ((value.0 % 10_000_000) * 100) as i32,
+            i64::try_from(value.0 / 10_000_000)
+                .expect("The number of seconds is out of range of `i64`"),
+            i32::try_from((value.0 % 10_000_000) * 100)
+                .expect("The number of nanoseconds is out of range of `i32`"),
         );
 
         NT_EPOCH.checked_add(duration).ok_or(Error::FileTimeTooBig)
@@ -126,15 +134,31 @@ impl TryFrom<FileTime> for OffsetDateTime {
 
 #[cfg(test)]
 mod tests {
-    #[cfg(feature = "time")]
-    use time::{macros::datetime, Duration, OffsetDateTime};
-
-    #[allow(unused_imports)]
     use super::*;
 
     /// The largest value that can be represented by the Windows NT system time.
     #[cfg(feature = "large-dates")]
     const MAX: OffsetDateTime = datetime!(+60056-05-28 05:36:10.955_161_500 UTC);
+
+    #[test]
+    fn default_file_time() {
+        assert_eq!(FileTime::default(), FileTime(u64::MIN));
+    }
+
+    #[test]
+    fn u64_to_file_time() {
+        assert_eq!(FileTime::from(u64::MIN), FileTime(u64::MIN));
+        assert_eq!(FileTime::from(u64::MAX), FileTime(u64::MAX));
+    }
+
+    #[cfg(feature = "time")]
+    #[test]
+    fn system_time_to_file_time() {
+        assert_eq!(
+            FileTime::try_from(std::time::UNIX_EPOCH).unwrap(),
+            FileTime(116_444_736_000_000_000)
+        );
+    }
 
     #[cfg(feature = "time")]
     #[test]
@@ -156,6 +180,21 @@ mod tests {
 
         #[cfg(feature = "large-dates")]
         assert!(FileTime::try_from(MAX + Duration::nanoseconds(100)).is_err());
+    }
+
+    #[test]
+    fn file_time_to_u64() {
+        assert_eq!(u64::from(FileTime(u64::MIN)), u64::MIN);
+        assert_eq!(u64::from(FileTime(u64::MAX)), u64::MAX);
+    }
+
+    #[cfg(feature = "time")]
+    #[test]
+    fn file_time_to_system_time() {
+        assert_eq!(
+            SystemTime::try_from(FileTime(116_444_736_000_000_000)).unwrap(),
+            std::time::UNIX_EPOCH
+        );
     }
 
     #[cfg(feature = "time")]
