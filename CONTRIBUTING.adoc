@@ -8,17 +8,20 @@ Please submit to the https://github.com/sorairolake/7z-rs/issues[Issues].
 
 == Branching model
 
-The branching model of this project is based on the https://nvie.com/posts/a-successful-git-branching-model/[git-flow].
+The branching model of this project is based on the
+https://nvie.com/posts/a-successful-git-branching-model/[git-flow].
 
 == Style guides
 
 === Commit message
 
-Please see the https://github.com/RomuloOliveira/commit-messages-guide[Commit messages guide].
+Please see the
+https://github.com/RomuloOliveira/commit-messages-guide[Commit messages guide].
 
 === Coding style
 
-The coding style of this project is based on the https://github.com/rust-dev-tools/fmt-rfcs/blob/master/guide/guide.md[Rust style guide].
+The coding style of this project is based on the
+https://github.com/rust-dev-tools/fmt-rfcs/blob/master/guide/guide.md[Rust style guide].
 
 == Development
 

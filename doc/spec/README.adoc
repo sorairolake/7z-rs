@@ -1,6 +1,7 @@
 = 7z file format specification
 
-The specification is imported from the https://www.7-zip.org/sdk.html[LZMA SDK] v21.07.
+The specification is imported from the https://www.7-zip.org/sdk.html[LZMA SDK]
+v21.07.
 
 == See also
 
