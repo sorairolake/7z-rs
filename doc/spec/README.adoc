@@ -1,9 +1,11 @@
 = 7z file format specification
+:lzma-sdk-url: https://www.7-zip.org/sdk.html
+:wikipedia-article-url: https://en.wikipedia.org/wiki/7z
+:py7zr-specification-url: https://py7zr.readthedocs.io/en/latest/archive_format.html
 
-The specification is imported from the https://www.7-zip.org/sdk.html[LZMA SDK]
-v21.07.
+The specification is imported from the {lzma-sdk-url}[LZMA SDK] v21.07.
 
 == See also
 
-* https://en.wikipedia.org/wiki/7z[English Wikipedia article]
-* https://py7zr.readthedocs.io/en/latest/archive_format.html[Specification by py7zr project]
+* {wikipedia-article-url}[English Wikipedia article]
+* {py7zr-specification-url}[Specification by py7zr project]

@@ -1,49 +1,38 @@
 = Contribution Guide
-
-Thank you for your contributions!
-
-== Feature requests and bug reports
-
-Please submit to the https://github.com/sorairolake/7z-rs/issues[Issues].
+:git-flow-url: https://nvie.com/posts/a-successful-git-branching-model/
+:commit-messages-guide-url: https://github.com/RomuloOliveira/commit-messages-guide
 
 == Branching model
 
-The branching model of this project is based on the
-https://nvie.com/posts/a-successful-git-branching-model/[git-flow].
+The branching model of this project is based on the {git-flow-url}[git-flow].
 
 == Style guides
 
 === Commit message
 
-Please see the
-https://github.com/RomuloOliveira/commit-messages-guide[Commit messages guide].
-
-=== Coding style
-
-The coding style of this project is based on the
-https://github.com/rust-dev-tools/fmt-rfcs/blob/master/guide/guide.md[Rust style guide].
+Please see the {commit-messages-guide-url}[Commit messages guide].
 
 == Development
 
 === Useful development tools
 
+The https://github.com/casey/just[just] command runner can be used.
+Run `just --list` for more details.
+
 .Run tests
 [source, shell]
 ----
-$ cargo test
+just test
 ----
 
-.Run the code formatter
+.Run the formatter
 [source, shell]
 ----
-$ cargo fmt
+just fmt
 ----
 
 .Run the linter
 [source, shell]
 ----
-$ cargo clippy -- -D warnings
+just lint
 ----
-
-Also, the https://github.com/casey/just[just] command runner can be used.
-Run `just --list` for more details.
