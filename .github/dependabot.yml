@@ -4,6 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "clap"
 
   - package-ecosystem: "github-actions"
     directory: "/"

@@ -27,6 +27,7 @@ thiserror = "1.0.38"
 time = { version = "0.3.18", features = ["macros"], optional = true }
 
 [dev-dependencies]
+anyhow = "1.0.69"
 clap = { version = "3.2.23", features = ["derive"] }
 
 [features]
