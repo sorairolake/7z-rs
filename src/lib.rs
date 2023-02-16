@@ -24,11 +24,12 @@
 //! [sdk]: https://www.7-zip.org/sdk.html
 //! [time]: https://docs.rs/time
 
-#![doc(html_root_url = "https://docs.rs/sz/0.0.1/sz/")]
+#![doc(html_root_url = "https://docs.rs/sz/0.0.1/")]
+#![cfg_attr(doc_cfg, feature(doc_cfg))]
 // Lint levels of rustc.
-#![warn(rust_2018_idioms)]
-#![deny(missing_debug_implementations, missing_docs)]
 #![forbid(unsafe_code)]
+#![deny(missing_debug_implementations, missing_docs)]
+#![warn(rust_2018_idioms)]
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 

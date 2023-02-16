@@ -15,13 +15,14 @@ use time::{macros::datetime, Duration, OffsetDateTime};
 
 /// The NT time epoch.
 #[cfg(feature = "time")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
 const NT_EPOCH: OffsetDateTime = datetime!(1601-01-01 00:00 UTC);
 
 /// The error type for 7z timestamp.
 #[derive(Debug, Error)]
 pub enum Error {
     /// Out of range of the timestamp.
-    #[error("Out of range of 7z timestamp")]
+    #[error("out of range of 7z timestamp")]
     InvalidFileTime,
 
     /// The timestamp is too big.
@@ -34,7 +35,7 @@ pub enum Error {
 /// This is the same as the [Windows NT system time][file-times].
 ///
 /// [file-times]: https://docs.microsoft.com/en-us/windows/win32/sysinfo/file-times
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct FileTime(u64);
 
 impl Default for FileTime {
@@ -52,6 +53,7 @@ impl From<u64> for FileTime {
 }
 
 #[cfg(feature = "time")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
 impl TryFrom<SystemTime> for FileTime {
     type Error = Error;
 
@@ -67,6 +69,7 @@ impl TryFrom<SystemTime> for FileTime {
 }
 
 #[cfg(feature = "time")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
 impl TryFrom<OffsetDateTime> for FileTime {
     type Error = Error;
 
@@ -94,6 +97,7 @@ impl From<FileTime> for u64 {
 }
 
 #[cfg(feature = "time")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
 impl TryFrom<FileTime> for SystemTime {
     type Error = Error;
 
@@ -111,6 +115,7 @@ impl TryFrom<FileTime> for SystemTime {
 }
 
 #[cfg(feature = "time")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
 impl TryFrom<FileTime> for OffsetDateTime {
     type Error = Error;
 
@@ -123,9 +128,9 @@ impl TryFrom<FileTime> for OffsetDateTime {
     fn try_from(value: FileTime) -> Result<Self, Self::Error> {
         let duration = Duration::new(
             i64::try_from(value.0 / 10_000_000)
-                .expect("The number of seconds is out of range of `i64`"),
+                .expect("the number of seconds is out of range of `i64`"),
             i32::try_from((value.0 % 10_000_000) * 100)
-                .expect("The number of nanoseconds is out of range of `i32`"),
+                .expect("the number of nanoseconds is out of range of `i32`"),
         );
 
         NT_EPOCH.checked_add(duration).ok_or(Error::FileTimeTooBig)

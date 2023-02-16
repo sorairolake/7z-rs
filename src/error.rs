@@ -14,7 +14,7 @@ use thiserror::Error;
 #[derive(Debug, Error)]
 pub enum Error {
     /// The archive is invalid.
-    #[error("Invalid 7z archive")]
+    #[error("invalid 7z archive")]
     InvalidArchive(String),
 
     /// An error caused by I/O.
@@ -22,11 +22,11 @@ pub enum Error {
     Io(#[from] io::Error),
 
     /// The password is required to decrypt the archive.
-    #[error("The password is required to decrypt 7z archive")]
+    #[error("the password is required to decrypt 7z archive")]
     PasswordRequired,
 
     /// The archive is not supported.
-    #[error("Unsupported 7z archive")]
+    #[error("unsupported 7z archive")]
     UnsupportedArchive(String),
 }
 
