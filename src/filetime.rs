@@ -81,7 +81,6 @@ impl TryFrom<OffsetDateTime> for FileTime {
     /// Windows NT system time.
     fn try_from(value: OffsetDateTime) -> Result<Self, Self::Error> {
         let elapsed = (value - NT_EPOCH).whole_nanoseconds();
-
         match u64::try_from(elapsed / 100) {
             Ok(ft) if !elapsed.is_negative() => Ok(Self(ft)),
             _ => Err(Error::InvalidFileTime),
@@ -109,7 +108,6 @@ impl TryFrom<FileTime> for SystemTime {
     /// disabled and `value` is out of range of [`OffsetDateTime`].
     fn try_from(value: FileTime) -> Result<Self, Self::Error> {
         let dt = OffsetDateTime::try_from(value)?;
-
         Ok(Self::from(dt))
     }
 }
@@ -132,7 +130,6 @@ impl TryFrom<FileTime> for OffsetDateTime {
             i32::try_from((value.0 % 10_000_000) * 100)
                 .expect("the number of nanoseconds is out of range of `i32`"),
         );
-
         NT_EPOCH.checked_add(duration).ok_or(Error::FileTimeTooBig)
     }
 }

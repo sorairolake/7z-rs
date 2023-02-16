@@ -36,5 +36,7 @@
 mod error;
 pub mod filetime;
 
-pub use crate::error::{Error, Result};
-pub use crate::filetime::FileTime;
+pub use crate::{
+    error::{Error, Result},
+    filetime::FileTime,
+};
