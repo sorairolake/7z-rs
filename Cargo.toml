@@ -11,6 +11,14 @@ repository = "https://github.com/sorairolake/7z-rs"
 license = "Apache-2.0 OR MIT"
 keywords = ["7z", "archive"]
 categories = ["parsing"]
+exclude = [
+  "/.github",
+  "/clippy.toml",
+  "/doc",
+  "/examples",
+  "/justfile",
+  "/rustfmt.toml",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -23,5 +31,8 @@ clap = { version = "3.0.6", features = ["derive"] }
 
 [features]
 default = ["time"]
-
 large-dates = ["time/large-dates"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]
