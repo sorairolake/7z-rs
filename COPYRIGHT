@@ -2,5 +2,5 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Source: https://github.com/sorairolake/7z-rs
 
 Files: *
-Copyright: 2021 Shun Sakai
+Copyright: 2021-2023 Shun Sakai
 License: Apache-2.0 or MIT

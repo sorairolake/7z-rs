@@ -1,7 +1,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
-// Copyright (C) 2021 Shun Sakai
+// Copyright (C) 2021-2023 Shun Sakai
 //
 
 //! An example of creating an archive from files.
