@@ -46,9 +46,9 @@ impl Default for FileTime {
 }
 
 impl From<u64> for FileTime {
-    /// Convert the Windows NT system time to [`FileTime`].
-    fn from(value: u64) -> Self {
-        Self(value)
+    /// Converts the Windows NT system time to a `FileTime`.
+    fn from(time: u64) -> Self {
+        Self(time)
     }
 }
 
@@ -57,14 +57,13 @@ impl From<u64> for FileTime {
 impl TryFrom<SystemTime> for FileTime {
     type Error = Error;
 
-    /// Convert [`SystemTime`] to [`FileTime`].
+    /// Converts a [`SystemTime`] to a `FileTime`.
     ///
     /// # Errors
     ///
-    /// This function will return an error if `value` is out of range of the
-    /// Windows NT system time.
-    fn try_from(value: SystemTime) -> Result<Self, Self::Error> {
-        Self::try_from(OffsetDateTime::from(value))
+    /// Returns [`Err`] if `time` is out of range of the Windows NT system time.
+    fn try_from(time: SystemTime) -> Result<Self, Self::Error> {
+        Self::try_from(OffsetDateTime::from(time))
     }
 }
 
@@ -73,14 +72,13 @@ impl TryFrom<SystemTime> for FileTime {
 impl TryFrom<OffsetDateTime> for FileTime {
     type Error = Error;
 
-    /// Convert [`OffsetDateTime`] to [`FileTime`].
+    /// Converts a [`OffsetDateTime`] to a `FileTime`.
     ///
     /// # Errors
     ///
-    /// This function will return an error if `value` is out of range of the
-    /// Windows NT system time.
-    fn try_from(value: OffsetDateTime) -> Result<Self, Self::Error> {
-        let elapsed = (value - NT_EPOCH).whole_nanoseconds();
+    /// Returns [`Err`] if `dt` is out of range of the Windows NT system time.
+    fn try_from(dt: OffsetDateTime) -> Result<Self, Self::Error> {
+        let elapsed = (dt - NT_EPOCH).whole_nanoseconds();
         match u64::try_from(elapsed / 100) {
             Ok(ft) if !elapsed.is_negative() => Ok(Self(ft)),
             _ => Err(Error::InvalidFileTime),
@@ -89,9 +87,9 @@ impl TryFrom<OffsetDateTime> for FileTime {
 }
 
 impl From<FileTime> for u64 {
-    /// Convert [`FileTime`] to the Windows NT system time.
-    fn from(value: FileTime) -> Self {
-        value.0
+    /// Converts a `FileTime` to the Windows NT system time.
+    fn from(time: FileTime) -> Self {
+        time.0
     }
 }
 
@@ -100,14 +98,14 @@ impl From<FileTime> for u64 {
 impl TryFrom<FileTime> for SystemTime {
     type Error = Error;
 
-    /// Convert [`FileTime`] to [`SystemTime`].
+    /// Converts a `FileTime` to a [`SystemTime`].
     ///
     /// # Errors
     ///
-    /// This function will return an error if the `large-dates` feature is
-    /// disabled and `value` is out of range of [`OffsetDateTime`].
-    fn try_from(value: FileTime) -> Result<Self, Self::Error> {
-        let dt = OffsetDateTime::try_from(value)?;
+    /// Returns [`Err`] if the `large-dates` feature is disabled and `time` is
+    /// out of range of [`OffsetDateTime`].
+    fn try_from(time: FileTime) -> Result<Self, Self::Error> {
+        let dt = OffsetDateTime::try_from(time)?;
         Ok(Self::from(dt))
     }
 }
@@ -117,17 +115,17 @@ impl TryFrom<FileTime> for SystemTime {
 impl TryFrom<FileTime> for OffsetDateTime {
     type Error = Error;
 
-    /// Convert [`FileTime`] to [`OffsetDateTime`].
+    /// Converts a `FileTime` to a [`OffsetDateTime`].
     ///
     /// # Errors
     ///
-    /// This function will return an error if the `large-dates` feature is
-    /// disabled and `value` is out of range of [`OffsetDateTime`].
-    fn try_from(value: FileTime) -> Result<Self, Self::Error> {
+    /// Returns [`Err`] if the `large-dates` feature is disabled and `time` is
+    /// out of range of [`OffsetDateTime`].
+    fn try_from(time: FileTime) -> Result<Self, Self::Error> {
         let duration = Duration::new(
-            i64::try_from(value.0 / 10_000_000)
+            i64::try_from(time.0 / 10_000_000)
                 .expect("the number of seconds is out of range of `i64`"),
-            i32::try_from((value.0 % 10_000_000) * 100)
+            i32::try_from((time.0 % 10_000_000) * 100)
                 .expect("the number of nanoseconds is out of range of `i32`"),
         );
         NT_EPOCH.checked_add(duration).ok_or(Error::FileTimeTooBig)

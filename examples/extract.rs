@@ -15,11 +15,11 @@
 
 use clap::Parser;
 
-/// Extract files in an archive.
+/// Extract files in archive.
 #[derive(Debug, Parser)]
 #[clap(version, about)]
 struct Opt {
-    /// An archive to extract.
+    /// Archive to extract.
     pub archive: std::path::PathBuf,
 
     /// Entries to extract.

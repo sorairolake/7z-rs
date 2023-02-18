@@ -15,11 +15,11 @@
 
 use clap::Parser;
 
-/// List entries in an archive.
+/// List entries in archive.
 #[derive(Debug, Parser)]
 #[clap(version, about)]
 struct Opt {
-    /// An archive to list entries.
+    /// Archive to list entries.
     pub archive: std::path::PathBuf,
 }
 

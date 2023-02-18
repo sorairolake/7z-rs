@@ -15,14 +15,14 @@
 
 use clap::Parser;
 
-/// Create an archive from files.
+/// Create archive from files.
 #[derive(Debug, Parser)]
 #[clap(version, about)]
 struct Opt {
-    /// An archive to create.
+    /// Archive to create.
     pub archive: std::path::PathBuf,
 
-    /// Files to add to the archive.
+    /// Files to add to archive.
     pub file: Vec<std::path::PathBuf>,
 }
 
