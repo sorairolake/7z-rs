@@ -45,47 +45,6 @@ impl Default for FileTime {
     }
 }
 
-impl From<u64> for FileTime {
-    /// Converts the Windows NT system time to a `FileTime`.
-    fn from(time: u64) -> Self {
-        Self(time)
-    }
-}
-
-#[cfg(feature = "time")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
-impl TryFrom<SystemTime> for FileTime {
-    type Error = Error;
-
-    /// Converts a [`SystemTime`] to a `FileTime`.
-    ///
-    /// # Errors
-    ///
-    /// Returns [`Err`] if `time` is out of range of the Windows NT system time.
-    fn try_from(time: SystemTime) -> Result<Self, Self::Error> {
-        Self::try_from(OffsetDateTime::from(time))
-    }
-}
-
-#[cfg(feature = "time")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
-impl TryFrom<OffsetDateTime> for FileTime {
-    type Error = Error;
-
-    /// Converts a [`OffsetDateTime`] to a `FileTime`.
-    ///
-    /// # Errors
-    ///
-    /// Returns [`Err`] if `dt` is out of range of the Windows NT system time.
-    fn try_from(dt: OffsetDateTime) -> Result<Self, Self::Error> {
-        let elapsed = (dt - NT_EPOCH).whole_nanoseconds();
-        match u64::try_from(elapsed / 100) {
-            Ok(ft) if !elapsed.is_negative() => Ok(Self(ft)),
-            _ => Err(Error::InvalidFileTime),
-        }
-    }
-}
-
 impl From<FileTime> for u64 {
     /// Converts a `FileTime` to the Windows NT system time.
     fn from(time: FileTime) -> Self {
@@ -132,6 +91,47 @@ impl TryFrom<FileTime> for OffsetDateTime {
     }
 }
 
+impl From<u64> for FileTime {
+    /// Converts the Windows NT system time to a `FileTime`.
+    fn from(time: u64) -> Self {
+        Self(time)
+    }
+}
+
+#[cfg(feature = "time")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
+impl TryFrom<SystemTime> for FileTime {
+    type Error = Error;
+
+    /// Converts a [`SystemTime`] to a `FileTime`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`Err`] if `time` is out of range of the Windows NT system time.
+    fn try_from(time: SystemTime) -> Result<Self, Self::Error> {
+        Self::try_from(OffsetDateTime::from(time))
+    }
+}
+
+#[cfg(feature = "time")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
+impl TryFrom<OffsetDateTime> for FileTime {
+    type Error = Error;
+
+    /// Converts a [`OffsetDateTime`] to a `FileTime`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`Err`] if `dt` is out of range of the Windows NT system time.
+    fn try_from(dt: OffsetDateTime) -> Result<Self, Self::Error> {
+        let elapsed = (dt - NT_EPOCH).whole_nanoseconds();
+        match u64::try_from(elapsed / 100) {
+            Ok(ft) if !elapsed.is_negative() => Ok(Self(ft)),
+            _ => Err(Error::InvalidFileTime),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -143,43 +143,6 @@ mod tests {
     #[test]
     fn default_file_time() {
         assert_eq!(FileTime::default(), FileTime(u64::MIN));
-    }
-
-    #[test]
-    fn u64_to_file_time() {
-        assert_eq!(FileTime::from(u64::MIN), FileTime(u64::MIN));
-        assert_eq!(FileTime::from(u64::MAX), FileTime(u64::MAX));
-    }
-
-    #[cfg(feature = "time")]
-    #[test]
-    fn system_time_to_file_time() {
-        assert_eq!(
-            FileTime::try_from(std::time::UNIX_EPOCH).unwrap(),
-            FileTime(116_444_736_000_000_000)
-        );
-    }
-
-    #[cfg(feature = "time")]
-    #[test]
-    fn offset_date_time_to_file_time() {
-        assert!(FileTime::try_from(NT_EPOCH - Duration::NANOSECOND).is_err());
-
-        assert_eq!(FileTime::try_from(NT_EPOCH).unwrap(), FileTime(u64::MIN));
-        assert_eq!(
-            FileTime::try_from(OffsetDateTime::UNIX_EPOCH).unwrap(),
-            FileTime(116_444_736_000_000_000)
-        );
-        assert_eq!(
-            FileTime::try_from(datetime!(9999-12-31 23:59:59.999_999_999 UTC)).unwrap(),
-            FileTime(2_650_467_743_999_999_999)
-        );
-
-        #[cfg(feature = "large-dates")]
-        assert_eq!(FileTime::try_from(MAX).unwrap(), FileTime(u64::MAX));
-
-        #[cfg(feature = "large-dates")]
-        assert!(FileTime::try_from(MAX + Duration::nanoseconds(100)).is_err());
     }
 
     #[test]
@@ -218,5 +181,42 @@ mod tests {
 
         #[cfg(feature = "large-dates")]
         assert_eq!(OffsetDateTime::try_from(FileTime(u64::MAX)).unwrap(), MAX);
+    }
+
+    #[test]
+    fn u64_to_file_time() {
+        assert_eq!(FileTime::from(u64::MIN), FileTime(u64::MIN));
+        assert_eq!(FileTime::from(u64::MAX), FileTime(u64::MAX));
+    }
+
+    #[cfg(feature = "time")]
+    #[test]
+    fn system_time_to_file_time() {
+        assert_eq!(
+            FileTime::try_from(std::time::UNIX_EPOCH).unwrap(),
+            FileTime(116_444_736_000_000_000)
+        );
+    }
+
+    #[cfg(feature = "time")]
+    #[test]
+    fn offset_date_time_to_file_time() {
+        assert!(FileTime::try_from(NT_EPOCH - Duration::NANOSECOND).is_err());
+
+        assert_eq!(FileTime::try_from(NT_EPOCH).unwrap(), FileTime(u64::MIN));
+        assert_eq!(
+            FileTime::try_from(OffsetDateTime::UNIX_EPOCH).unwrap(),
+            FileTime(116_444_736_000_000_000)
+        );
+        assert_eq!(
+            FileTime::try_from(datetime!(9999-12-31 23:59:59.999_999_999 UTC)).unwrap(),
+            FileTime(2_650_467_743_999_999_999)
+        );
+
+        #[cfg(feature = "large-dates")]
+        assert_eq!(FileTime::try_from(MAX).unwrap(), FileTime(u64::MAX));
+
+        #[cfg(feature = "large-dates")]
+        assert!(FileTime::try_from(MAX + Duration::nanoseconds(100)).is_err());
     }
 }
