@@ -175,11 +175,17 @@ mod tests {
             OffsetDateTime::try_from(FileTime(2_650_467_743_999_999_999)).unwrap(),
             datetime!(9999-12-31 23:59:59.999_999_900 UTC)
         );
+    }
 
-        #[cfg(not(feature = "large-dates"))]
+    #[cfg(all(feature = "time", not(feature = "large-dates")))]
+    #[test]
+    fn file_time_to_offset_date_time_with_invalid_file_time() {
         assert!(OffsetDateTime::try_from(FileTime(2_650_467_744_000_000_000)).is_err());
+    }
 
-        #[cfg(feature = "large-dates")]
+    #[cfg(all(feature = "time", feature = "large-dates"))]
+    #[test]
+    fn file_time_to_offset_date_time_with_large_dates() {
         assert_eq!(OffsetDateTime::try_from(FileTime(u64::MAX)).unwrap(), MAX);
     }
 
@@ -200,9 +206,13 @@ mod tests {
 
     #[cfg(feature = "time")]
     #[test]
-    fn offset_date_time_to_file_time() {
+    fn offset_date_time_to_file_time_before_epoch() {
         assert!(FileTime::try_from(NT_EPOCH - Duration::NANOSECOND).is_err());
+    }
 
+    #[cfg(feature = "time")]
+    #[test]
+    fn offset_date_time_to_file_time() {
         assert_eq!(FileTime::try_from(NT_EPOCH).unwrap(), FileTime(u64::MIN));
         assert_eq!(
             FileTime::try_from(OffsetDateTime::UNIX_EPOCH).unwrap(),
@@ -212,11 +222,17 @@ mod tests {
             FileTime::try_from(datetime!(9999-12-31 23:59:59.999_999_999 UTC)).unwrap(),
             FileTime(2_650_467_743_999_999_999)
         );
+    }
 
-        #[cfg(feature = "large-dates")]
+    #[cfg(all(feature = "time", feature = "large-dates"))]
+    #[test]
+    fn offset_date_time_to_file_time_with_large_dates() {
         assert_eq!(FileTime::try_from(MAX).unwrap(), FileTime(u64::MAX));
+    }
 
-        #[cfg(feature = "large-dates")]
+    #[cfg(all(feature = "time", feature = "large-dates"))]
+    #[test]
+    fn offset_date_time_to_file_time_with_too_big_date_time() {
         assert!(FileTime::try_from(MAX + Duration::nanoseconds(100)).is_err());
     }
 }
