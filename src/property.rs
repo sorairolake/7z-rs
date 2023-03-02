@@ -7,8 +7,8 @@
 //! 7z properties.
 
 #[allow(dead_code)]
-/// Magic number of the 7z format.
-pub const MAGIC_NUMBER: [u8; 6] = [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c];
+/// The signature of the 7z format.
+pub const SIGNATURE: [u8; 6] = [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c];
 
 /// Represents 7z properties.
 #[derive(Debug)]
@@ -201,8 +201,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn magic_number() {
-        assert_eq!(MAGIC_NUMBER, [b'7', b'z', 0xbc, 0xaf, 0x27, 0x1c]);
+    fn signature() {
+        assert_eq!(SIGNATURE, [b'7', b'z', 0xbc, 0xaf, 0x27, 0x1c]);
     }
 
     #[allow(clippy::cognitive_complexity)]

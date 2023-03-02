@@ -83,9 +83,9 @@ impl TryFrom<FileTime> for OffsetDateTime {
     fn try_from(time: FileTime) -> Result<Self, Self::Error> {
         let duration = Duration::new(
             i64::try_from(time.0 / 10_000_000)
-                .expect("the number of seconds is out of range of `i64`"),
+                .expect("the number of seconds should be in the range of `i64`"),
             i32::try_from((time.0 % 10_000_000) * 100)
-                .expect("the number of nanoseconds is out of range of `i32`"),
+                .expect("the number of nanoseconds should be in the range of `i32`"),
         );
         NT_EPOCH.checked_add(duration).ok_or(Error::FileTimeTooBig)
     }

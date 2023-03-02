@@ -33,7 +33,7 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
-mod error;
+pub mod error;
 pub mod filetime;
 mod property;
 
