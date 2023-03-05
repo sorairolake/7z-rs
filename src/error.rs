@@ -6,7 +6,7 @@
 
 //! The error type for this crate.
 
-use std::io;
+use std::{borrow::Cow, io};
 
 use thiserror::Error;
 
@@ -33,7 +33,7 @@ pub enum Error {
 
     /// A custom error.
     #[error("{0}")]
-    Other(String),
+    Other(Cow<'static, str>),
 }
 
 impl From<Error> for io::Error {
@@ -183,10 +183,7 @@ mod tests {
 
     #[test]
     fn display_other_error() {
-        assert_eq!(
-            format!("{}", Error::Other("Hello, world!".to_string())),
-            "Hello, world!"
-        );
+        assert_eq!(format!("{}", Error::Other("Error".into())), "Error");
     }
 
     #[test]
@@ -243,7 +240,7 @@ mod tests {
 
     #[test]
     fn source_other_error() {
-        assert!(Error::Other("Hello, world!".to_string()).source().is_none());
+        assert!(Error::Other("Error".into()).source().is_none());
     }
 
     #[test]
